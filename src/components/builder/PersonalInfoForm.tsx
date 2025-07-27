@@ -9,15 +9,37 @@ import { User, Mail, Phone, MapPin, Globe, Linkedin } from 'lucide-react';
 
 export const PersonalInfoForm = () => {
   const { resumeData, updatePersonalInfo } = useResumeStore();
-  const { register, handleSubmit, watch } = useForm<PersonalInfo>({
+  const { register, watch } = useForm<PersonalInfo>({
     defaultValues: resumeData.personalInfo
   });
 
-  const formData = watch();
+  // Use callback ref to track if this is initial render
+  const isInitialRender = React.useRef(true);
 
+  // Watch form data
+  const watchedData = watch();
+
+  // Debounced update to prevent infinite loops
   React.useEffect(() => {
-    updatePersonalInfo(formData);
-  }, [formData, updatePersonalInfo]);
+    // Skip initial render to prevent loop
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
+    }
+
+    // Only update if data has actually changed
+    const hasChanges = Object.keys(watchedData).some(
+      key => watchedData[key as keyof PersonalInfo] !== resumeData.personalInfo[key as keyof PersonalInfo]
+    );
+
+    if (hasChanges) {
+      const timer = setTimeout(() => {
+        updatePersonalInfo(watchedData);
+      }, 300);
+
+      return () => clearTimeout(timer);
+    }
+  }, [watchedData, updatePersonalInfo, resumeData.personalInfo]);
 
   return (
     <div className="space-y-6">
