@@ -1,11 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/lib/auth-store';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { FileText, Zap, Download, Globe, Star, CheckCircle, ArrowRight, Sparkles } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
+  const { isAuthenticated, checkAuth, signOut, user } = useAuthStore();
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  const handleGetStarted = () => {
+    if (isAuthenticated) {
+      navigate('/builder');
+    } else {
+      navigate('/auth');
+    }
+  };
 
   const features = [
     {
@@ -61,8 +75,28 @@ const Index = () => {
             <div className="hidden md:flex items-center space-x-6">
               <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Features</a>
               <a href="#templates" className="text-muted-foreground hover:text-foreground transition-colors">Templates</a>
-              <Button variant="outline" size="sm">Sign In</Button>
-              <Button className="btn-gradient" size="sm">Get Started</Button>
+              {isAuthenticated ? (
+                <>
+                  <span className="text-sm text-muted-foreground">
+                    Welcome, {user?.user_metadata?.full_name || user?.email}
+                  </span>
+                  <Button variant="outline" size="sm" onClick={() => navigate('/builder')}>
+                    Dashboard
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={signOut}>
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" size="sm" onClick={() => navigate('/auth')}>
+                    Sign In
+                  </Button>
+                  <Button className="btn-gradient" size="sm" onClick={handleGetStarted}>
+                    Get Started
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -88,9 +122,9 @@ const Index = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   className="btn-gradient text-lg px-8 py-6 hover-lift"
-                  onClick={() => navigate('/builder')}
+                  onClick={handleGetStarted}
                 >
-                  Start Building Now
+                  {isAuthenticated ? 'Go to Builder' : 'Start Building Now'}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
                 <Button variant="outline" className="text-lg px-8 py-6">
@@ -196,9 +230,9 @@ const Index = () => {
             </div>
             <Button 
               className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-6 hover-lift"
-              onClick={() => navigate('/builder')}
+              onClick={handleGetStarted}
             >
-              Start Building Your Resume
+              {isAuthenticated ? 'Continue Building' : 'Start Building Your Resume'}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>

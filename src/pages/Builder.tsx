@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, Download, Eye, Save } from 'lucide-react';
+import { ArrowLeft, Download, Eye, Save, User, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/lib/auth-store';
 import { PersonalInfoForm } from '@/components/builder/PersonalInfoForm';
 import { ExperienceForm } from '@/components/builder/ExperienceForm';
 import { EducationForm } from '@/components/builder/EducationForm';
@@ -15,6 +16,7 @@ const Builder = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const { resumeData } = useResumeStore();
+  const { user, signOut } = useAuthStore();
 
   const steps = [
     { title: 'Personal Info', component: PersonalInfoForm },
@@ -62,6 +64,12 @@ const Builder = () => {
               </div>
             </div>
             <div className="flex items-center space-x-2">
+              <div className="hidden md:flex items-center space-x-2 mr-4">
+                <User className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">
+                  {user?.user_metadata?.full_name || user?.email}
+                </span>
+              </div>
               <Button variant="outline" size="sm">
                 <Save className="h-4 w-4 mr-2" />
                 Save Draft
@@ -73,6 +81,9 @@ const Builder = () => {
               <Button className="btn-success" size="sm">
                 <Download className="h-4 w-4 mr-2" />
                 Download PDF
+              </Button>
+              <Button variant="ghost" size="sm" onClick={signOut}>
+                <LogOut className="h-4 w-4" />
               </Button>
             </div>
           </div>
