@@ -5,13 +5,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useResumeStore, Education } from '@/lib/store';
 import { Plus, GraduationCap, Calendar, Trash2, GripVertical } from 'lucide-react';
 
 export const EducationForm = () => {
   const { resumeData, addEducation, updateEducation, removeEducation } = useResumeStore();
   const [isAddingNew, setIsAddingNew] = useState(false);
-  const { register, handleSubmit, reset } = useForm<Omit<Education, 'id'>>();
+  const { register, handleSubmit, reset, watch, setValue } = useForm<Omit<Education, 'id'>>();
+  const isCurrent = watch('current');
 
   const onSubmit = (data: Omit<Education, 'id'>) => {
     addEducation(data);
@@ -36,7 +38,7 @@ export const EducationForm = () => {
                   <span>{edu.institution}</span>
                   <span>•</span>
                   <Calendar className="h-4 w-4" />
-                  <span>{edu.startDate} - {edu.endDate}</span>
+                  <span>{edu.startDate} - {edu.current ? 'Present' : edu.endDate}</span>
                 </div>
                 {edu.gpa && (
                   <p className="text-sm text-muted-foreground mb-2">GPA: {edu.gpa}</p>
@@ -118,7 +120,8 @@ export const EducationForm = () => {
                 <Input
                   id="endDate"
                   type="month"
-                  {...register('endDate', { required: true })}
+                  disabled={isCurrent}
+                  {...register('endDate', { required: !isCurrent })}
                 />
               </div>
               <div className="space-y-2">
@@ -129,6 +132,22 @@ export const EducationForm = () => {
                   {...register('gpa')}
                 />
               </div>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="current"
+                {...register('current')}
+                onCheckedChange={(checked) => {
+                  setValue('current', checked as boolean);
+                  if (checked) {
+                    setValue('endDate', '');
+                  }
+                }}
+              />
+              <Label htmlFor="current" className="text-sm font-medium">
+                I am currently pursuing this degree
+              </Label>
             </div>
 
             <div className="space-y-2">

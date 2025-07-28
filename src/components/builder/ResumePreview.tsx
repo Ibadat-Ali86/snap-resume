@@ -1,13 +1,13 @@
 import React from 'react';
 import { ResumeData } from '@/lib/store';
-import { Mail, Phone, MapPin, Globe, Linkedin, Calendar } from 'lucide-react';
+import { Mail, Phone, MapPin, Globe, Linkedin, Calendar, ExternalLink, Github } from 'lucide-react';
 
 interface ResumePreviewProps {
   data: ResumeData;
 }
 
 export const ResumePreview: React.FC<ResumePreviewProps> = ({ data }) => {
-  const { personalInfo, experience, education, skills } = data;
+  const { personalInfo, experience, education, projects, skills } = data;
 
   return (
     <div className="bg-white p-8 font-roboto text-sm leading-relaxed" style={{ minHeight: '297mm', width: '210mm', maxWidth: '100%' }}>
@@ -120,13 +120,66 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ data }) => {
                   </div>
                   <div className="text-gray-600 text-sm flex items-center">
                     <Calendar className="h-4 w-4 mr-1" />
-                    {edu.startDate} - {edu.endDate}
+                    {edu.startDate} - {edu.current ? 'Present' : edu.endDate}
                   </div>
                 </div>
                 
                 {edu.achievements.length > 0 && (
                   <ul className="list-disc list-inside text-gray-700 space-y-1 ml-4">
                     {edu.achievements.map((achievement, index) => (
+                      <li key={index}>{achievement}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Projects Section */}
+      {projects.length > 0 && (
+        <section className="mb-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-3 border-b border-gray-300 pb-1">
+            Projects
+          </h2>
+          <div className="space-y-4">
+            {projects.map((project) => (
+              <div key={project.id} className="mb-4">
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <div className="flex items-center space-x-2 mb-1">
+                      <h3 className="text-lg font-semibold text-gray-900">{project.name}</h3>
+                      {project.link && (
+                        <ExternalLink className="h-4 w-4 text-blue-600" />
+                      )}
+                      {project.github && (
+                        <Github className="h-4 w-4 text-gray-600" />
+                      )}
+                    </div>
+                    <p className="text-gray-700 mb-2">{project.description}</p>
+                    {project.technologies.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {project.technologies.map((tech, index) => (
+                          <span
+                            key={index}
+                            className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-medium"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-gray-600 text-sm flex items-center">
+                    <Calendar className="h-4 w-4 mr-1" />
+                    {project.startDate} - {project.current ? 'Present' : project.endDate}
+                  </div>
+                </div>
+                
+                {project.achievements.length > 0 && (
+                  <ul className="list-disc list-inside text-gray-700 space-y-1 ml-4">
+                    {project.achievements.map((achievement, index) => (
                       <li key={index}>{achievement}</li>
                     ))}
                   </ul>

@@ -8,20 +8,47 @@ import { useAuthStore } from '@/lib/auth-store';
 import { PersonalInfoForm } from '@/components/builder/PersonalInfoForm';
 import { ExperienceForm } from '@/components/builder/ExperienceForm';
 import { EducationForm } from '@/components/builder/EducationForm';
+import { ProjectsForm } from '@/components/builder/ProjectsForm';
 import { SkillsForm } from '@/components/builder/SkillsForm';
 import { ResumePreview } from '@/components/builder/ResumePreview';
 import { useResumeStore } from '@/lib/store';
+import { toast } from '@/hooks/use-toast';
 
 const Builder = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
-  const { resumeData } = useResumeStore();
+  const { resumeData, saveResume, downloadPDF } = useResumeStore();
   const { user, signOut } = useAuthStore();
+
+  const handleSave = async () => {
+    const success = await saveResume();
+    if (success) {
+      toast({
+        title: "Resume Saved",
+        description: "Your resume has been saved successfully.",
+      });
+    } else {
+      toast({
+        title: "Save Failed",
+        description: "Failed to save your resume. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDownload = () => {
+    downloadPDF();
+    toast({
+      title: "Download Started",
+      description: "Your resume PDF is being prepared for download.",
+    });
+  };
 
   const steps = [
     { title: 'Personal Info', component: PersonalInfoForm },
     { title: 'Experience', component: ExperienceForm },
     { title: 'Education', component: EducationForm },
+    { title: 'Projects', component: ProjectsForm },
     { title: 'Skills', component: SkillsForm },
   ];
 
@@ -70,7 +97,7 @@ const Builder = () => {
                   {user?.user_metadata?.full_name || user?.email}
                 </span>
               </div>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={handleSave}>
                 <Save className="h-4 w-4 mr-2" />
                 Save Draft
               </Button>
@@ -78,7 +105,7 @@ const Builder = () => {
                 <Eye className="h-4 w-4 mr-2" />
                 Preview
               </Button>
-              <Button className="btn-success" size="sm">
+              <Button className="btn-success" size="sm" onClick={handleDownload}>
                 <Download className="h-4 w-4 mr-2" />
                 Download PDF
               </Button>
@@ -138,7 +165,8 @@ const Builder = () => {
                   {currentStep === 0 && "Let's start with your basic information"}
                   {currentStep === 1 && "Add your work experience and achievements"}
                   {currentStep === 2 && "Include your educational background"}
-                  {currentStep === 3 && "Highlight your skills and expertise"}
+                  {currentStep === 3 && "Showcase your projects and technical work"}
+                  {currentStep === 4 && "Highlight your skills and expertise"}
                 </p>
               </div>
 
@@ -174,7 +202,7 @@ const Builder = () => {
                   <Button variant="outline" size="sm">
                     <Eye className="h-4 w-4" />
                   </Button>
-                  <Button className="btn-success" size="sm">
+                  <Button className="btn-success" size="sm" onClick={handleDownload}>
                     <Download className="h-4 w-4" />
                   </Button>
                 </div>

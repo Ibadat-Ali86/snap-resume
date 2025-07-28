@@ -30,7 +30,21 @@ export interface Education {
   field: string;
   startDate: string;
   endDate: string;
+  current: boolean;
   gpa?: string;
+  achievements: string[];
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  description: string;
+  technologies: string[];
+  link?: string;
+  github?: string;
+  startDate: string;
+  endDate: string;
+  current: boolean;
   achievements: string[];
 }
 
@@ -45,6 +59,7 @@ export interface ResumeData {
   personalInfo: PersonalInfo;
   experience: Experience[];
   education: Education[];
+  projects: Project[];
   skills: Skill[];
   template: 'google' | 'microsoft' | 'amazon';
 }
@@ -58,10 +73,15 @@ interface ResumeStore {
   addEducation: (education: Omit<Education, 'id'>) => void;
   updateEducation: (id: string, education: Partial<Education>) => void;
   removeEducation: (id: string) => void;
+  addProject: (project: Omit<Project, 'id'>) => void;
+  updateProject: (id: string, project: Partial<Project>) => void;
+  removeProject: (id: string) => void;
   addSkill: (skill: Omit<Skill, 'id'>) => void;
   updateSkill: (id: string, skill: Partial<Skill>) => void;
   removeSkill: (id: string) => void;
   setTemplate: (template: ResumeData['template']) => void;
+  saveResume: () => Promise<boolean>;
+  downloadPDF: () => void;
 }
 
 const initialResumeData: ResumeData = {
@@ -77,6 +97,7 @@ const initialResumeData: ResumeData = {
   },
   experience: [],
   education: [],
+  projects: [],
   skills: [],
   template: 'google'
 };
@@ -180,11 +201,57 @@ export const useResumeStore = create<ResumeStore>()(
             skills: state.resumeData.skills.filter((s) => s.id !== id)
           }
         })),
+
+      addProject: (project) =>
+        set((state) => ({
+          resumeData: {
+            ...state.resumeData,
+            projects: [
+              ...state.resumeData.projects,
+              { ...project, id: crypto.randomUUID() }
+            ]
+          }
+        })),
+      
+      updateProject: (id, project) =>
+        set((state) => ({
+          resumeData: {
+            ...state.resumeData,
+            projects: state.resumeData.projects.map((proj) =>
+              proj.id === id ? { ...proj, ...project } : proj
+            )
+          }
+        })),
+      
+      removeProject: (id) =>
+        set((state) => ({
+          resumeData: {
+            ...state.resumeData,
+            projects: state.resumeData.projects.filter((proj) => proj.id !== id)
+          }
+        })),
       
       setTemplate: (template) =>
         set((state) => ({
           resumeData: { ...state.resumeData, template }
-        }))
+        })),
+
+      saveResume: async () => {
+        try {
+          // For now, just store in localStorage (can be enhanced with Supabase later)
+          const state = useResumeStore.getState();
+          localStorage.setItem('resume-backup', JSON.stringify(state.resumeData));
+          return true;
+        } catch (error) {
+          console.error('Failed to save resume:', error);
+          return false;
+        }
+      },
+
+      downloadPDF: () => {
+        // Basic PDF download functionality
+        window.print();
+      }
     }),
     {
       name: 'resume-builder-storage',
