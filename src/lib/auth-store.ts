@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { supabase, type Profile } from './supabase'
+import { supabase } from '@/integrations/supabase/client'
 import { toast } from '@/hooks/use-toast'
 
 interface User {
@@ -13,7 +13,7 @@ interface User {
 
 interface AuthStore {
   user: User | null
-  profile: Profile | null
+  profile: any | null
   isLoading: boolean
   isAuthenticated: boolean
   signUp: (email: string, password: string, fullName: string) => Promise<boolean>
@@ -37,6 +37,7 @@ export const useAuthStore = create<AuthStore>()(
             email,
             password,
             options: {
+              emailRedirectTo: `${window.location.origin}/`,
               data: {
                 full_name: fullName,
               },
