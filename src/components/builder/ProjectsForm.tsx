@@ -25,7 +25,7 @@ export const ProjectsForm = () => {
     <div className="space-y-6">
       {/* Existing Projects List */}
       <div className="space-y-4">
-        {resumeData.projects.map((project, index) => (
+        {(resumeData.projects || []).map((project, index) => (
           <Card key={project.id} className="p-6 border-l-4 border-l-accent">
             <div className="flex items-start justify-between">
               <div className="flex-1">
@@ -211,7 +211,7 @@ export const ProjectsForm = () => {
         </Card>
       )}
 
-      {resumeData.projects.length === 0 && !isAddingNew && (
+      {(resumeData.projects || []).length === 0 && !isAddingNew && (
         <Card className="p-8 text-center border-dashed border-accent">
           <div className="flex flex-col items-center space-y-4">
             <div className="w-16 h-16 bg-accent-light rounded-full flex items-center justify-center">
