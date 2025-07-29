@@ -50,7 +50,7 @@ export const ProjectsForm = () => {
                 <p className="text-sm text-muted-foreground mb-3">{project.description}</p>
                 {project.technologies?.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-3">
-                    {project.technologies.map((tech, i) => (
+                    {project.technologies?.map((tech, i) => (
                       <span key={i} className="px-2 py-1 bg-accent/20 text-accent text-xs rounded-md">
                         {tech}
                       </span>
@@ -59,7 +59,7 @@ export const ProjectsForm = () => {
                 )}
                 {project.achievements?.length > 0 && (
                   <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                    {project.achievements.map((achievement, i) => (
+                    {project.achievements?.map((achievement, i) => (
                       <li key={i}>{achievement}</li>
                     ))}
                   </ul>
