@@ -7,7 +7,22 @@ interface ResumePreviewProps {
 }
 
 export const ResumePreview: React.FC<ResumePreviewProps> = ({ data }) => {
-  const { personalInfo, experience, education, projects, skills } = data;
+  const { 
+    personalInfo = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      location: '',
+      website: '',
+      linkedin: '',
+      summary: ''
+    }, 
+    experience = [], 
+    education = [], 
+    projects = [], 
+    skills = [] 
+  } = data || {};
 
   return (
     <div className="bg-white p-8 font-roboto text-sm leading-relaxed" style={{ minHeight: '297mm', width: '210mm', maxWidth: '100%' }}>
