@@ -25,7 +25,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ data }) => {
   } = data || {};
 
   return (
-    <div className="bg-white p-8 font-roboto text-sm leading-relaxed" style={{ minHeight: '297mm', width: '210mm', maxWidth: '100%' }}>
+    <div data-resume-preview className="bg-white p-8 font-roboto text-sm leading-relaxed" style={{ minHeight: '297mm', width: '210mm', maxWidth: '100%' }}>
       {/* Header Section */}
       <header className="border-b border-gray-200 pb-6 mb-6">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
