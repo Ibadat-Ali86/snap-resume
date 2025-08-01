@@ -1,6 +1,9 @@
 # AI Resume Builder
 
 A modern, professional resume builder application built with React, TypeScript, and Supabase. Create beautiful, ATS-friendly resumes with real-time preview and PDF export functionality.
+## 🚀 Live Demo
+
+**[View Live Application](https://snap-resume-p8lzooqtt-ibadcodes-6074s-projects.vercel.app)**
 
 ## ✨ Features
 
@@ -119,6 +122,7 @@ src/
 
 - **Lovable Staging**: Available through the Lovable project dashboard
 - **Production**: Deploy using any of the methods above
+- 
 
 ## 🛠️ Development
 
